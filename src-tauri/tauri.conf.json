@@ -12,14 +12,21 @@
   "app": {
     "windows": [
       {
-        "title": "rmbg",
-        "width": 800,
-        "height": 600
+        "title": "Background Removal",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1000,
+        "minHeight": 700
       }
     ],
     "security": {
-      "csp": null
-    }
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": ["**"]
+      }
+    },
+    "withGlobalTauri": true
   },
   "bundle": {
     "active": true,
