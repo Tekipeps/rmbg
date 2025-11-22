@@ -1,7 +1,8 @@
 use anyhow::Result;
 use image::{DynamicImage, GenericImageView, ImageBuffer, Rgba};
-use ndarray::{Array, Array4, Axis};
-use ort::{Session, SessionOutputs};
+use ndarray::{Array4, Axis};
+use ort::session::{Session, SessionOutputs};
+use ort::value::Value;
 use std::path::Path;
 
 pub struct BackgroundRemover {
@@ -11,31 +12,35 @@ pub struct BackgroundRemover {
 impl BackgroundRemover {
     pub fn new(model_path: &Path) -> Result<Self> {
         let session = Session::builder()?
-            .with_optimization_level(ort::GraphOptimizationLevel::Level3)?
+            .with_optimization_level(ort::session::builder::GraphOptimizationLevel::Level3)?
             .commit_from_file(model_path)?;
 
         Ok(Self { session })
     }
 
-    pub fn remove_background(&self, input_image: &DynamicImage) -> Result<DynamicImage> {
+    pub fn remove_background(&mut self, input_image: &DynamicImage) -> Result<DynamicImage> {
         let (orig_width, orig_height) = input_image.dimensions();
 
         // Preprocess image
         let input_tensor = self.preprocess_image(input_image)?;
 
         // Run inference
-        let outputs: SessionOutputs = self.session.run(ort::inputs![input_tensor]?)?;
+        let input_value = Value::from_array(input_tensor)?;
+        let outputs: SessionOutputs = self.session.run(ort::inputs![input_value])?;
 
         // Get the output tensor
-        let output = outputs[0]
-            .try_extract_tensor::<f32>()?
-            .into_dimensionality::<ndarray::Ix4>()?;
+        let (shape, data) = outputs[0].try_extract_tensor::<f32>()?;
+        let output = ndarray::ArrayView::from_shape(
+            shape.iter().map(|&x| x as usize).collect::<Vec<_>>(),
+            data,
+        )?
+        .into_dimensionality::<ndarray::Ix4>()?;
 
         // Post-process to get mask
-        let mask = self.postprocess_output(output, orig_width, orig_height)?;
+        let mask = Self::postprocess_output(output, orig_width, orig_height)?;
 
         // Apply mask to original image
-        let result = self.apply_mask(input_image, &mask)?;
+        let result = Self::apply_mask(input_image, &mask)?;
 
         Ok(result)
     }
@@ -62,7 +67,6 @@ impl BackgroundRemover {
     }
 
     fn postprocess_output(
-        &self,
         output: ndarray::ArrayView4<f32>,
         target_width: u32,
         target_height: u32,
@@ -71,12 +75,8 @@ impl BackgroundRemover {
         let mask = output.index_axis(Axis(0), 0);
 
         // Find min and max for normalization
-        let min = mask
-            .iter()
-            .fold(f32::INFINITY, |a, &b| a.min(b));
-        let max = mask
-            .iter()
-            .fold(f32::NEG_INFINITY, |a, &b| a.max(b));
+        let min = mask.iter().fold(f32::INFINITY, |a, &b| a.min(b));
+        let max = mask.iter().fold(f32::NEG_INFINITY, |a, &b| a.max(b));
         let range = max - min;
 
         // Get dimensions
@@ -115,7 +115,6 @@ impl BackgroundRemover {
     }
 
     fn apply_mask(
-        &self,
         image: &DynamicImage,
         mask: &ImageBuffer<image::Luma<u8>, Vec<u8>>,
     ) -> Result<DynamicImage> {
@@ -129,11 +128,7 @@ impl BackgroundRemover {
                 let pixel = rgba.get_pixel(x, y);
                 let mask_value = mask.get_pixel(x, y)[0];
 
-                result.put_pixel(
-                    x,
-                    y,
-                    Rgba([pixel[0], pixel[1], pixel[2], mask_value]),
-                );
+                result.put_pixel(x, y, Rgba([pixel[0], pixel[1], pixel[2], mask_value]));
             }
         }
 
@@ -146,7 +141,7 @@ pub fn process_image(model_path: &Path, input_path: &Path, output_path: &Path) -
     let input_image = image::open(input_path)?;
 
     // Create background remover
-    let remover = BackgroundRemover::new(model_path)?;
+    let mut remover = BackgroundRemover::new(model_path)?;
 
     // Process image
     let result = remover.remove_background(&input_image)?;
