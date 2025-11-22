@@ -4,7 +4,7 @@ mod processor;
 
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use tauri::Window;
+use tauri::{Emitter, Window};
 
 #[derive(Clone, Serialize)]
 struct DownloadProgressPayload {
@@ -123,12 +123,16 @@ async fn process_images(
     let models_dir = models::get_models_dir().map_err(|e| e.to_string())?;
 
     // Get the model file path (use first file for single-file models)
-    let model_file = model.files.first()
+    let model_file = model
+        .files
+        .first()
         .ok_or_else(|| "Model has no files".to_string())?;
     let model_path = models_dir.join(&model_file.name);
 
     if !model_path.exists() {
-        return Err(format!("Model file not found. Please download the model first."));
+        return Err(format!(
+            "Model file not found. Please download the model first."
+        ));
     }
 
     let mut results = Vec::new();
@@ -153,13 +157,16 @@ async fn process_images(
 
         // Determine output path
         let output_path = if let Some(ref output_dir) = request.output_dir {
-            let file_stem = input_path_buf.file_stem()
+            let file_stem = input_path_buf
+                .file_stem()
                 .ok_or_else(|| "Invalid input file name".to_string())?;
             PathBuf::from(output_dir).join(format!("{}_no_bg.png", file_stem.to_string_lossy()))
         } else {
-            let file_stem = input_path_buf.file_stem()
+            let file_stem = input_path_buf
+                .file_stem()
                 .ok_or_else(|| "Invalid input file name".to_string())?;
-            let parent = input_path_buf.parent()
+            let parent = input_path_buf
+                .parent()
                 .ok_or_else(|| "Invalid input file path".to_string())?;
             parent.join(format!("{}_no_bg.png", file_stem.to_string_lossy()))
         };

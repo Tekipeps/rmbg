@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { open as openPath } from "@tauri-apps/plugin-opener";
+import { openPath } from "@tauri-apps/plugin-opener";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import "./App.css";
 import type {
@@ -195,6 +195,10 @@ function App() {
     }
   }
 
+  function removeImage(index: number) {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+  }
+
   const selectedModel = models.find((m) => m.id === selectedModelId);
   const selectedModelStatus = modelStatuses.get(selectedModelId);
 
@@ -340,12 +344,39 @@ function App() {
 
             {selectedImages.length > 0 && (
               <div className="selected-images">
-                <h3>{selectedImages.length} image(s) selected</h3>
-                <ul className="image-list">
+                <div className="selected-header">
+                  <h3>{selectedImages.length} image(s) selected</h3>
+                  <button
+                    onClick={() => setSelectedImages([])}
+                    className="button-text"
+                  >
+                    Clear All
+                  </button>
+                </div>
+                <div className="image-grid">
                   {selectedImages.map((path, idx) => (
-                    <li key={idx}>{path.split(/[\\/]/).pop()}</li>
+                    <div key={`${path}-${idx}`} className="image-preview-item">
+                      <div className="image-preview-wrapper">
+                        <img
+                          src={convertFileSrc(path)}
+                          alt={`Selected ${idx}`}
+                          className="image-preview"
+                        />
+                        <button
+                          className="remove-image-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeImage(idx);
+                          }}
+                          title="Remove image"
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <p className="image-name" title={path}>{path.split(/[\\/]/).pop()}</p>
+                    </div>
                   ))}
-                </ul>
+                </div>
                 <button
                   onClick={processImages}
                   disabled={processing || downloading || !selectedModelStatus?.downloaded}
@@ -386,7 +417,7 @@ function App() {
                       <>
                         <div className="result-image-container">
                           <img
-                            src={`file://${result.output_path}`}
+                            src={convertFileSrc(result.output_path)}
                             alt={`Processed ${idx + 1}`}
                             className="result-image"
                           />
