@@ -28,6 +28,25 @@ npm run build
 npm run preview
 ```
 
+## Docker
+
+Build and run using Docker:
+
+```bash
+# Build the image
+docker build -t rmbg-web .
+
+# Run the container
+docker run -p 8080:80 rmbg-web
+```
+
+The site will be available at `http://localhost:8080`.
+
+The Docker image uses a multi-stage build with:
+- Build stage: `node:20-alpine` (~40MB base)
+- Production stage: `nginx:alpine` (~40MB base)
+- Final image size: ~10-15MB (excluding layers)
+
 ## Deployment
 
 The site can be deployed to any static hosting service:
@@ -36,6 +55,7 @@ The site can be deployed to any static hosting service:
 - Netlify
 - Vercel
 - Cloudflare Pages
+- Docker (see above)
 
 Simply build the project and deploy the `dist` folder.
 
