@@ -886,6 +886,33 @@ button:disabled {
   }
 }
 
+/* Footer */
+.footer {
+  background-color: var(--surface-color);
+  border-top: 1px solid var(--border-color);
+  padding: calc(var(--spacing) * 0.75) calc(var(--spacing) * 2);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.footer p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.footer a:hover {
+  color: var(--primary-light);
+  text-decoration: underline;
+}
+
 /* Focus styles for keyboard navigation */
 button:focus-visible,
 select:focus-visible {

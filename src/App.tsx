@@ -534,6 +534,15 @@ function App() {
           )}
         </div>
       </main>
+
+      <footer className="footer">
+        <p>
+          made with ❤️ by{" "}
+          <a href="https://tekipeps.com" target="_blank" rel="noopener noreferrer">
+            tekipeps
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
