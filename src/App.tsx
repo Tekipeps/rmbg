@@ -24,11 +24,21 @@ function App() {
   const [results, setResults] = useState<ProcessImageResult[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [showFirstTimeSetup, setShowFirstTimeSetup] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const saved = localStorage.getItem("theme");
+    return (saved as "light" | "dark") || "dark";
+  });
 
   useEffect(() => {
     initializeApp();
     setupEventListeners();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   async function initializeApp() {
     try {
@@ -246,9 +256,79 @@ function App() {
         </div>
       )}
 
+      {showSettings && (
+        <div className="modal-overlay" onClick={() => setShowSettings(false)}>
+          <div className="modal settings-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Settings</h2>
+              <button
+                className="close-button"
+                onClick={() => setShowSettings(false)}
+                title="Close"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <div className="settings-content">
+              <div className="setting-item">
+                <div className="setting-label">
+                  <h3>Theme</h3>
+                  <p className="setting-description">Choose your preferred color theme</p>
+                </div>
+                <div className="theme-toggle">
+                  <button
+                    className={`theme-option ${theme === "light" ? "active" : ""}`}
+                    onClick={() => setTheme("light")}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="5"></circle>
+                      <line x1="12" y1="1" x2="12" y2="3"></line>
+                      <line x1="12" y1="21" x2="12" y2="23"></line>
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                      <line x1="1" y1="12" x2="3" y2="12"></line>
+                      <line x1="21" y1="12" x2="23" y2="12"></line>
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    Light
+                  </button>
+                  <button
+                    className={`theme-option ${theme === "dark" ? "active" : ""}`}
+                    onClick={() => setTheme("dark")}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    Dark
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <header className="header">
-        <h1>Background Removal</h1>
-        <p>Remove backgrounds from images using AI models</p>
+        <div className="header-content">
+          <div className="header-text">
+            <h1>Background Removal</h1>
+            <p>Remove backgrounds from images using AI models</p>
+          </div>
+          <button
+            className="settings-button"
+            onClick={() => setShowSettings(true)}
+            title="Settings"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M12 1v6m0 6v6m0-18a2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1 1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2Z"></path>
+            </svg>
+          </button>
+        </div>
       </header>
 
       <main className="main-content">
