@@ -314,9 +314,18 @@ function App() {
 
       <header className="header">
         <div className="header-content">
-          <div className="header-text">
-            <h1>Background Removal</h1>
-            <p>Remove backgrounds from images using AI models</p>
+          <div className="logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 28L14 4L18 14L26 2" stroke="url(#gradient)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="14" cy="4" r="2.5" fill="url(#gradient)"/>
+              <path d="M22 8L20 12L24 14L28 10" stroke="url(#gradient)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <defs>
+                <linearGradient id="gradient" x1="6" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#6366f1"/>
+                  <stop offset="100%" stopColor="#818cf8"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
           <button
             className="settings-button"

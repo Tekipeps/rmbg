@@ -65,18 +65,20 @@ body {
 }
 
 .app {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Header */
 .header {
   background-color: var(--surface-color);
-  padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  padding: var(--spacing) calc(var(--spacing) * 2);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
+  flex-shrink: 0;
 }
 
 .header-content {
@@ -88,23 +90,14 @@ body {
   gap: var(--spacing);
 }
 
-.header-text {
-  flex: 1;
+.logo {
+  display: flex;
+  align-items: center;
+  cursor: default;
 }
 
-.header h1 {
-  font-size: 1.75rem;
-  margin-bottom: 0.25rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-weight: 700;
-}
-
-.header p {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
+.logo svg {
+  display: block;
 }
 
 .settings-button {
@@ -138,6 +131,8 @@ body {
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .sidebar {
@@ -787,15 +782,7 @@ button:disabled {
 
 @media (max-width: 768px) {
   .header {
-    padding: var(--spacing);
-  }
-
-  .header h1 {
-    font-size: 1.5rem;
-  }
-
-  .header p {
-    font-size: 0.875rem;
+    padding: calc(var(--spacing) * 0.75) var(--spacing);
   }
 
   .main-content {
@@ -845,12 +832,9 @@ button:disabled {
 }
 
 @media (max-width: 480px) {
-  .header h1 {
-    font-size: 1.25rem;
-  }
-
-  .header p {
-    font-size: 0.8rem;
+  .logo svg {
+    width: 28px;
+    height: 28px;
   }
 
   .settings-button {

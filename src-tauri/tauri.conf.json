@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Background Removal",
+        "title": "rmbg",
         "width": 1400,
         "height": 900,
         "minWidth": 1000,
