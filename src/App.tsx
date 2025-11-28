@@ -15,12 +15,16 @@ import type {
 function App() {
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [selectedModelId, setSelectedModelId] = useState<string>("");
-  const [modelStatuses, setModelStatuses] = useState<Map<string, ModelStatus>>(new Map());
+  const [modelStatuses, setModelStatuses] = useState<Map<string, ModelStatus>>(
+    new Map()
+  );
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [processing, setProcessing] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress | null>(null);
-  const [processingProgress, setProcessingProgress] = useState<ProcessingProgress | null>(null);
+  const [downloadProgress, setDownloadProgress] =
+    useState<DownloadProgress | null>(null);
+  const [processingProgress, setProcessingProgress] =
+    useState<ProcessingProgress | null>(null);
   const [results, setResults] = useState<ProcessImageResult[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [showFirstTimeSetup, setShowFirstTimeSetup] = useState(false);
@@ -155,13 +159,16 @@ function App() {
     try {
       setProcessing(true);
       setResults([]);
-      const processResults = await invoke<ProcessImageResult[]>("process_images", {
-        request: {
-          image_paths: selectedImages,
-          model_id: selectedModelId,
-          output_dir: null,
-        },
-      });
+      const processResults = await invoke<ProcessImageResult[]>(
+        "process_images",
+        {
+          request: {
+            image_paths: selectedImages,
+            model_id: selectedModelId,
+            output_dir: null,
+          },
+        }
+      );
       setResults(processResults);
     } catch (error) {
       console.error("Failed to process images:", error);
@@ -231,8 +238,10 @@ function App() {
                   />
                 </div>
                 <p className="progress-text">
-                  {downloadProgress.file_name}: {downloadProgress.percentage.toFixed(1)}%
-                  ({(downloadProgress.downloaded / 1024 / 1024).toFixed(1)} MB / {(downloadProgress.total / 1024 / 1024).toFixed(1)} MB)
+                  {downloadProgress.file_name}:{" "}
+                  {downloadProgress.percentage.toFixed(1)}% (
+                  {(downloadProgress.downloaded / 1024 / 1024).toFixed(1)} MB /{" "}
+                  {(downloadProgress.total / 1024 / 1024).toFixed(1)} MB)
                 </p>
               </div>
             )}
@@ -258,7 +267,10 @@ function App() {
 
       {showSettings && (
         <div className="modal-overlay" onClick={() => setShowSettings(false)}>
-          <div className="modal settings-modal" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="modal settings-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="modal-header">
               <h2>Settings</h2>
               <button
@@ -266,7 +278,16 @@ function App() {
                 onClick={() => setShowSettings(false)}
                 title="Close"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
@@ -276,14 +297,27 @@ function App() {
               <div className="setting-item">
                 <div className="setting-label">
                   <h3>Theme</h3>
-                  <p className="setting-description">Choose your preferred color theme</p>
+                  <p className="setting-description">
+                    Choose your preferred color theme
+                  </p>
                 </div>
                 <div className="theme-toggle">
                   <button
-                    className={`theme-option ${theme === "light" ? "active" : ""}`}
+                    className={`theme-option ${
+                      theme === "light" ? "active" : ""
+                    }`}
                     onClick={() => setTheme("light")}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <circle cx="12" cy="12" r="5"></circle>
                       <line x1="12" y1="1" x2="12" y2="3"></line>
                       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -297,10 +331,21 @@ function App() {
                     Light
                   </button>
                   <button
-                    className={`theme-option ${theme === "dark" ? "active" : ""}`}
+                    className={`theme-option ${
+                      theme === "dark" ? "active" : ""
+                    }`}
                     onClick={() => setTheme("dark")}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                     Dark
@@ -322,7 +367,16 @@ function App() {
             onClick={() => setShowSettings(true)}
             title="Settings"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M12 1v6m0 6v6m0-18a2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1 1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2Z"></path>
             </svg>
@@ -352,7 +406,9 @@ function App() {
               <div className="model-info">
                 <p className="model-description">{selectedModel.description}</p>
                 <p className="model-size">
-                  Size: {selectedModel.files.reduce((sum, f) => sum + f.size_mb, 0)} MB
+                  Size:{" "}
+                  {selectedModel.files.reduce((sum, f) => sum + f.size_mb, 0)}{" "}
+                  MB
                 </p>
                 {selectedModelStatus && !selectedModelStatus.downloaded && (
                   <button
@@ -393,9 +449,13 @@ function App() {
                   <div key={model.id} className="model-item">
                     <div className="model-item-header">
                       <span className="model-name">{model.name}</span>
-                      {status?.downloaded && <span className="status-badge">✓</span>}
+                      {status?.downloaded && (
+                        <span className="status-badge">✓</span>
+                      )}
                     </div>
-                    <p className="model-item-description">{model.description}</p>
+                    <p className="model-item-description">
+                      {model.description}
+                    </p>
                   </div>
                 );
               })}
@@ -452,13 +512,19 @@ function App() {
                           ×
                         </button>
                       </div>
-                      <p className="image-name" title={path}>{path.split(/[\\/]/).pop()}</p>
+                      <p className="image-name" title={path}>
+                        {path.split(/[\\/]/).pop()}
+                      </p>
                     </div>
                   ))}
                 </div>
                 <button
                   onClick={processImages}
-                  disabled={processing || downloading || !selectedModelStatus?.downloaded}
+                  disabled={
+                    processing ||
+                    downloading ||
+                    !selectedModelStatus?.downloaded
+                  }
                   className="button-primary button-large"
                 >
                   {processing ? "Processing..." : "Remove Background"}
@@ -478,7 +544,11 @@ function App() {
                   <div
                     className="progress-fill"
                     style={{
-                      width: `${(processingProgress.current / processingProgress.total) * 100}%`,
+                      width: `${
+                        (processingProgress.current /
+                          processingProgress.total) *
+                        100
+                      }%`,
                     }}
                   />
                 </div>
@@ -528,7 +598,11 @@ function App() {
       <footer className="footer">
         <p>
           made with ❤️ by{" "}
-          <a href="https://tekipeps.com" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://tekipeps.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             tekipeps
           </a>
         </p>
